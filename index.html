@@ -226,6 +226,49 @@ function showLeaderboard() {
   document.getElementById('leaderboard').innerHTML = html;
 }
 
+function showWinner() {
+  let mode = document.getElementById('mode').value;
+  let html = '<div class="winner"><h2>🏆 Winner Result (' + mode + ')</h2>';
+
+  if (mode === "Stroke" || mode === "Scramble") {
+    let results = players.map(p => {
+      let gross = scores[p].reduce((a,b) => a + b, 0);
+      let choco = chocolates[p].reduce((a,b) => a + b, 0);
+      return {name: p, net: gross - choco};
+    }).sort((a,b) => a.net - b.net);
+
+    html += '<h3>Overall Winner: <b>' + results[0].name + '</b> (' + results[0].net + ')</h3>';
+    html += '<table><tr><th>Rank</th><th>Player</th><th>Net Score</th></tr>';
+    results.forEach((r, i) => {
+      let cls = (i === 0) ? ' class="highlight"' : '';
+      html += '<tr' + cls + '><td>' + (i+1) + '</td><td>' + r.name + '</td><td>' + r.net + '</td></tr>';
+    });
+    html += '</table>';
+  } 
+  else if (mode === "Skins") {
+    html += '<h3>Skins Winners (Lowest score per hole)</h3>';
+    html += '<table><tr><th>Hole</th><th>Winner</th><th>Score</th></tr>';
+    for (let h = 0; h < pars.length; h++) {
+      let minScore = Infinity;
+      let winner = '';
+      players.forEach(p => {
+        let s = scores[p][h];
+        if (s > 0 && s < minScore) {
+          minScore = s;
+          winner = p;
+        }
+      });
+      if (winner) {
+        html += '<tr><td>H' + (h+1) + '</td><td>' + winner + '</td><td>' + minScore + '</td></tr>';
+      }
+    }
+    html += '</table>';
+  }
+
+  html += '</div>';
+  document.getElementById('leaderboard').innerHTML += html;
+}
+
 function downloadScorecard() {
   const leaderboard = document.getElementById('leaderboard');
   if (!leaderboard.innerHTML.trim()) {
