@@ -84,11 +84,11 @@ th {background:#1f3a1f}
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
-// ... (same variables and functions)
 let players = [];
 let scores = {};
 let chocolates = {};
 let pars = [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4];
+let currentCourseName = "";
 
 const courses = {
   "Forest City Classic": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
@@ -114,13 +114,72 @@ function startGame() {
     alert("Please add at least one player");
     return;
   }
-  document.getElementById('currentCourse').textContent = document.getElementById('course').value || "No Course";
+  currentCourseName = document.getElementById('course').value || "No Course";
+  document.getElementById('currentCourse').textContent = currentCourseName;
   document.getElementById('currentMode').textContent = document.getElementById('mode').value;
   showPage(2);
+  updatePlayerSelect();
   showLeaderboard();
 }
 
-// ... (other functions remain the same: loadCourse, showModeDesc, updateHoles, addPlayer, etc.)
+function loadCourse() {
+  let course = document.getElementById('course').value;
+  if (course && courses[course]) pars = courses[course];
+  updateHoles();
+}
+
+function showModeDesc() {
+  let mode = document.getElementById('mode').value;
+  let desc = document.getElementById('modeDesc');
+  if (mode === "Stroke") desc.innerHTML = "Lowest total strokes wins.";
+  else if (mode === "Scramble") desc.innerHTML = "Best shot every hole. Lowest total wins.";
+  else if (mode === "Nassau") desc.innerHTML = "Bet on Front 9, Back 9, and Full 18.";
+  else if (mode === "Skins") desc.innerHTML = "Lowest score on each hole wins the skin.";
+}
+
+function updateHoles() {
+  let select = document.getElementById('hole');
+  let chocoSelect = document.getElementById('chocoHole');
+  select.innerHTML = chocoSelect.innerHTML = '';
+  for (let i = 1; i <= pars.length; i++) {
+    let opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = "Hole " + i + " (Par " + pars[i-1] + ")";
+    select.appendChild(opt);
+    chocoSelect.appendChild(opt.cloneNode(true));
+  }
+}
+
+function addPlayer() {
+  let name = document.getElementById('player').value.trim();
+  if (name && !players.includes(name)) {
+    players.push(name);
+    scores[name] = Array(pars.length).fill(0);
+    chocolates[name] = Array(pars.length).fill(0);
+    document.getElementById('player').value = '';
+    updatePlayerList();
+    updatePlayerSelect();
+  } else if (name) {
+    alert("Player already exists!");
+  }
+}
+
+function updatePlayerList() {
+  document.getElementById('players').innerHTML = "<b>Players:</b><br>" + players.join("<br>");
+}
+
+function updatePlayerSelect() {
+  let select = document.getElementById('playerSelect');
+  let chocoSelect = document.getElementById('chocoPlayer');
+  select.innerHTML = chocoSelect.innerHTML = '';
+  players.forEach(p => {
+    let opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    select.appendChild(opt);
+    chocoSelect.appendChild(opt.cloneNode(true));
+  });
+}
 
 function addScore() {
   let hole = parseInt(document.getElementById('hole').value) - 1;
@@ -146,7 +205,7 @@ function giveChocolate() {
 
 function showLeaderboard() {
   let numHoles = pars.length;
-  let html = "<h2>Leaderboard - " + numHoles + " Holes</h2><table>";
+  let html = `<h2>${currentCourseName} - ${numHoles} Holes</h2><table>`;
   html += "<tr><th>Player</th>";
   for (let i = 1; i <= numHoles; i++) html += "<th>H" + i + "</th>";
   html += "<th>Gross</th><th>Chocolate</th><th>Net</th></tr>";
@@ -167,32 +226,21 @@ function showLeaderboard() {
   document.getElementById('leaderboard').innerHTML = html;
 }
 
-// New Download Function
-async function downloadScorecard() {
+function downloadScorecard() {
   const leaderboard = document.getElementById('leaderboard');
-  if (!leaderboard.innerHTML) {
+  if (!leaderboard.innerHTML.trim()) {
     alert("Please show leaderboard first");
     return;
   }
-
-  try {
-    const canvas = await html2canvas(leaderboard, {
-      backgroundColor: "#0a1f0a",
-      scale: 2
-    });
-    
+  html2canvas(leaderboard, {backgroundColor: "#0a1f0a", scale: 2}).then(canvas => {
     const link = document.createElement('a');
-    link.download = 'Golf_Scorecard.png';
+    link.download = currentCourseName.replace(/ /g, '_') + '_Scorecard.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-    
-    alert("✅ Scorecard downloaded! Check your Downloads folder.");
-  } catch(e) {
-    alert("Download failed. Please try again.");
-  }
+    alert("✅ Scorecard downloaded!");
+  });
 }
 
-// ... (rest of the functions: showWinner, resetGame, init, etc.)
 function resetGame() {
   scores = {};
   chocolates = {};
