@@ -11,54 +11,73 @@ select, input, button {padding:15px;margin:8px 0;width:100%;font-size:17px;borde
 button {background:#22c55e;color:#0a1f0a;font-weight:bold}
 button:active {background:#16a34a}
 .red-btn {background:#ef4444}
-table {width:100%;border-collapse:collapse;margin:15px 0;background:#1a1a1a; overflow-x:auto; display:block}
-th, td {border:1px solid #334433;padding:10px;text-align:center; white-space:nowrap}
+table {width:100%;border-collapse:collapse;margin:15px 0;background:#1a1a1a;overflow-x:auto;display:block}
+th, td {border:1px solid #334433;padding:10px;text-align:center;white-space:nowrap}
 th {background:#1f3a1f}
 .winner {background:#166534;color:white;padding:20px;text-align:center;font-size:20px;margin:15px 0;border-radius:14px}
 .highlight {background:#4ade80 !important;color:#0a1f0a;font-weight:bold}
+.page {display:none}
+.page.active {display:block}
+.log {margin-top:8px;color:#4ade80;font-size:14px}
 </style>
 </head>
 <body>
-<h1>🏌️ Golf Tracker</h1>
 
-<div class="card">
-    <select id="course" onchange="loadCourse()"></select>
-    <select id="mode" onchange="showModeDesc()">
-        <option value="Stroke">Stroke Play</option>
-        <option value="Scramble">Scramble</option>
-        <option value="Nassau">Nassau</option>
-        <option value="Skins">Skins</option>
-    </select>
-    <div id="modeDesc" style="font-size:15px;margin:12px 0"></div>
+<!-- ==================== PAGE 1: SETUP ==================== -->
+<div id="page1" class="page active">
+    <h1>🏌️ Golf Tracker</h1>
+    
+    <div class="card">
+        <select id="course" onchange="loadCourse()"></select>
+        <select id="mode" onchange="showModeDesc()">
+            <option value="Stroke">Stroke Play</option>
+            <option value="Scramble">Scramble</option>
+            <option value="Nassau">Nassau</option>
+            <option value="Skins">Skins</option>
+        </select>
+        <div id="modeDesc" style="font-size:15px;margin:12px 0"></div>
+    </div>
+
+    <div class="card">
+        <input id="player" placeholder="Player name">
+        <button onclick="addPlayer()">Add Player</button>
+        <div id="players" style="margin-top:10px"></div>
+    </div>
+
+    <button onclick="startGame()" style="width:100%;padding:18px;font-size:18px;background:#22c55e">Start Game →</button>
 </div>
 
-<div class="card">
-    <input id="player" placeholder="Player name">
-    <button onclick="addPlayer()">Add Player</button>
-    <div id="players" style="margin-top:10px"></div>
+<!-- ==================== PAGE 2: SCORING ==================== -->
+<div id="page2" class="page">
+    <h1>🏌️ Golf Tracker</h1>
+    <div style="text-align:center;margin-bottom:15px;color:#4ade80">
+        <span id="currentCourse"></span> • <span id="currentMode"></span>
+    </div>
+
+    <div class="card">
+        <h2>Enter / Edit Score</h2>
+        <select id="hole"></select>
+        <select id="playerSelect"></select>
+        <input id="strokes" type="number" placeholder="Strokes">
+        <button onclick="addScore()">Add / Update Score</button>
+        <div id="scoreLog" class="log"></div>
+    </div>
+
+    <div class="card">
+        <h2>🍫 Give Handicap Stroke (Chocolate)</h2>
+        <select id="chocoPlayer"></select>
+        <select id="chocoHole"></select>
+        <input id="chocoStrokes" type="number" value="1" style="width:80px">
+        <button onclick="giveChocolate()">Give / Update Chocolate</button>
+        <div id="chocoLog" class="log"></div>
+    </div>
+
+    <div id="leaderboard" class="card"></div>
+
+    <button onclick="showLeaderboard()" style="width:100%;margin:8px 0">Show Leaderboard</button>
+    <button onclick="showWinner()" style="width:100%;margin:8px 0">Show Winner</button>
+    <button onclick="resetGame()" class="red-btn" style="width:100%">Reset Game</button>
 </div>
-
-<div class="card">
-    <h2>Enter / Edit Score</h2>
-    <select id="hole"></select>
-    <select id="playerSelect"></select>
-    <input id="strokes" type="number" placeholder="Strokes">
-    <button onclick="addScore()">Add / Update Score</button>
-</div>
-
-<div class="card">
-    <h2>🍫 Give Handicap Stroke (Chocolate)</h2>
-    <select id="chocoPlayer"></select>
-    <select id="chocoHole"></select>
-    <input id="chocoStrokes" type="number" value="1" style="width:80px">
-    <button onclick="giveChocolate()">Give / Update Chocolate</button>
-</div>
-
-<div id="leaderboard" class="card"></div>
-
-<button onclick="showLeaderboard()" style="width:100%;margin:8px 0">Show Leaderboard</button>
-<button onclick="showWinner()" style="width:100%;margin:8px 0">Show Winner</button>
-<button onclick="resetGame()" class="red-btn" style="width:100%">Reset Game</button>
 
 <script>
 let players = [];
@@ -78,6 +97,23 @@ const courses = {
   "Permas Jaya 9H": [4,3,5,4,3,4,5,4,4],
   "Horizon Hill Golf": [4,5,3,4,4,5,4,3,4,4,4,3,5,4,4,4,3,5]
 };
+
+function showPage(page) {
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.remove('active');
+  document.getElementById('page' + page).classList.add('active');
+}
+
+function startGame() {
+  if (players.length === 0) {
+    alert("Please add at least one player");
+    return;
+  }
+  document.getElementById('currentCourse').textContent = document.getElementById('course').value || "No Course Selected";
+  document.getElementById('currentMode').textContent = document.getElementById('mode').value;
+  showPage(2);
+  showLeaderboard();
+}
 
 function loadCourse() {
   let course = document.getElementById('course').value;
@@ -142,6 +178,7 @@ function addScore() {
   let strokes = parseInt(document.getElementById('strokes').value);
   if (player && strokes > 0) {
     scores[player][hole] = strokes;
+    document.getElementById('scoreLog').innerHTML = `✅ Updated ${player} Hole ${hole+1}: ${strokes}`;
     showLeaderboard();
   }
 }
@@ -152,14 +189,14 @@ function giveChocolate() {
   let strokes = parseInt(document.getElementById('chocoStrokes').value) || 1;
   if (player) {
     chocolates[player][hole] += strokes;
-    alert("Gave " + strokes + " chocolate to " + player + " on Hole " + (hole+1));
+    document.getElementById('chocoLog').innerHTML = `🍫 ${player} Hole ${hole+1}: +${strokes}`;
     showLeaderboard();
   }
 }
 
 function showLeaderboard() {
   let numHoles = pars.length;
-  let html = "<h2>Leaderboard - " + numHoles + " Holes</h2><table style='display:block;overflow-x:auto'>";
+  let html = "<h2>Leaderboard - " + numHoles + " Holes</h2><table>";
   html += "<tr><th>Player</th>";
   for (let i = 1; i <= numHoles; i++) html += "<th>H" + i + "</th>";
   html += "<th>Gross</th><th>Chocolate</th><th>Net</th></tr>";
@@ -192,14 +229,13 @@ function showWinner() {
     }).sort((a,b) => a.net - b.net);
 
     html += '🏆 Winner (' + mode + '): <b>' + results[0].name + '</b> (Net ' + results[0].net + ')<br><br>';
-    html += '<h3>Final Ranking</h3><table><tr><th>Rank</th><th>Player</th><th>Net Score</th></tr>';
+    html += '<h3>Final Ranking</h3><table><tr><th>Rank</th><th>Player</th><th>Net</th></tr>';
     results.forEach((r, i) => {
       let rowClass = (i === 0) ? ' class="highlight"' : '';
       html += '<tr' + rowClass + '><td>' + (i+1) + '</td><td>' + r.name + '</td><td>' + r.net + '</td></tr>';
     });
     html += '</table>';
-  } 
-  else if (mode === "Skins") {
+  } else if (mode === "Skins") {
     html += 'Skins Winners (per hole - lowest wins)<br><br>';
     let skinsHtml = '<table><tr><th>Hole</th><th>Winner</th><th>Score</th></tr>';
     for (let h = 0; h < pars.length; h++) {
@@ -217,7 +253,6 @@ function showWinner() {
     skinsHtml += '</table>';
     html += skinsHtml;
   }
-
   html += '</div>';
   document.getElementById('leaderboard').innerHTML += html;
 }
@@ -227,8 +262,11 @@ function resetGame() {
   chocolates = {};
   players = [];
   document.getElementById('leaderboard').innerHTML = '';
+  document.getElementById('scoreLog').innerHTML = '';
+  document.getElementById('chocoLog').innerHTML = '';
   updatePlayerList();
   updatePlayerSelect();
+  showPage(1);
 }
 
 function init() {
