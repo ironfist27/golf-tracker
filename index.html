@@ -29,7 +29,46 @@ th {background:#1f3a1f}
     <h1>🏌️ Golf Tracker</h1>
     
     <div class="card">
-        <select id="course" onchange="loadCourse()"></select>
+        <select id="course" onchange="loadCourse()">
+            <optgroup label="🇸🇬 Singapore">
+                <option value="Sentosa Serapong">Sentosa Serapong</option>
+                <option value="Sentosa Tanjong">Sentosa Tanjong</option>
+                <option value="Orchid Country Club Aranda Dendro">Orchid CC - Aranda Dendro</option>
+                <option value="Orchid Country Club Aranda Vanda">Orchid CC - Aranda Vanda</option>
+                <option value="Orchid Country Club Dendra Aranda">Orchid CC - Dendra Aranda</option>
+                <option value="Orchid Country Club Dendro Vanda">Orchid CC - Dendro Vanda</option>
+                <option value="Tanah Merah Tampines">Tanah Merah Tampines</option>
+                <option value="Tanah Merah Garden">Tanah Merah Garden</option>
+                <option value="Laguna National Masters">Laguna National Masters</option>
+                <option value="Singapore Island Country Club">Singapore Island CC</option>
+                <option value="Seletar Country Club">Seletar Country Club</option>
+            </optgroup>
+            
+            <optgroup label="🇲🇾 Malaysia">
+                <option value="Forest City Classic">Forest City Classic</option>
+                <option value="Forest City Legacy">Forest City Legacy</option>
+                <option value="Els Golf Lakes">Els Golf Lakes</option>
+                <option value="Tanjong Puteri Plantation">Tanjong Puteri Plantation</option>
+                <option value="Permaipura Golf">Permaipura Golf</option>
+                <option value="Senibong Golf">Senibong Golf</option>
+                <option value="Johor Bahru Golf">Johor Bahru Golf</option>
+                <option value="Permas Jaya 9H">Permas Jaya 9H</option>
+                <option value="Horizon Hill Golf">Horizon Hill Golf</option>
+                <option value="Mountain View Golf">Mountain View Golf</option>
+                <option value="Bukit Jawi Golf Hill Course">Bukit Jawi Hill</option>
+                <option value="Bukit Jawi Golf Lake Course">Bukit Jawi Lake</option>
+                <option value="Royal Kedah Club">Royal Kedah Club</option>
+                <option value="Darulaman Golf Country Club">Darulaman Golf CC</option>
+                <option value="Kulim Golf Country Club">Kulim Golf CC</option>
+            </optgroup>
+            
+            <optgroup label="🇮🇩 Indonesia">
+                <option value="Batam Island Country Club Nongsa">Batam Island CC Nongsa</option>
+                <option value="Batam Hill Golf">Batam Hill Golf</option>
+                <option value="South Links Country Club">South Links Country Club</option>
+            </optgroup>
+        </select>
+        
         <select id="mode" onchange="showModeDesc()">
             <option value="Stroke">Stroke Play</option>
             <option value="Scramble">Scramble</option>
@@ -91,32 +130,54 @@ let pars = [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4];
 let currentCourseName = "";
 
 const courses = {
+  // Singapore
+  "Sentosa Serapong": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
+  "Sentosa Tanjong": [4,3,4,4,5,4,4,3,5,4,4,5,3,4,4,3,5,4],
+  "Orchid Country Club Aranda Dendro": [4,3,4,5,4,3,5,4,4,5,4,5,3,4,5,4,3,4],
+  "Orchid Country Club Aranda Vanda": [4,3,4,5,4,3,5,4,4,4,3,3,4,4,5,4,4,5],
+  "Orchid Country Club Dendra Aranda": [5,4,5,3,4,5,4,3,4,4,3,4,5,4,3,5,4,4],
+  "Orchid Country Club Dendro Vanda": [5,4,5,3,4,3,4,4,4,4,3,3,4,4,5,4,4,5],
+  "Tanah Merah Tampines": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
+  "Tanah Merah Garden": [4,4,3,4,5,4,4,3,5,4,4,5,3,4,4,3,5,4],
+  "Laguna National Masters": [4,5,3,4,4,5,4,3,5,4,4,5,3,4,4,3,5,4],
+  "Singapore Island Country Club": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
+  "Seletar Country Club": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
+
+  // Indonesia
+  "Batam Island Country Club Nongsa": [4,5,4,3,4,4,3,5,4,4,5,4,3,4,3,4,5,4],
+  "Batam Hill Golf": [4,5,4,3,5,4,3,4,4,4,4,3,4,4,5,3,4,4],
+  "South Links Country Club": [4,4,4,3,4,5,3,4,5,4,5,4,3,4,4,4,3,5],
+
+  // Malaysia
   "Forest City Classic": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
   "Forest City Legacy": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
   "Els Golf Lakes": [4,3,4,5,4,4,3,5,4,4,4,5,3,4,5,4,3,4],
-  "Sentosa Serapong": [4,4,5,4,3,4,5,3,4,4,4,5,3,4,3,5,4,4],
   "Tanjong Puteri Plantation": [5,4,4,3,4,4,5,3,4,4,3,4,4,5,3,4,5,4],
   "Permaipura Golf": [4,4,3,4,5,3,5,4,4,4,4,4,3,4,3,5,5,5],
   "Senibong Golf": [4,3,4,4,3,4,5,3,5,4,4,4,4,5,5,4,4,3],
   "Johor Bahru Golf": [4,4,4,3,5,5,4,3,3,5,4,3,4,5,4,4,4,3],
   "Permas Jaya 9H": [4,3,5,4,3,4,5,4,4],
-  "Horizon Hill Golf": [4,5,3,4,4,5,4,3,4,4,4,3,5,4,4,4,3,5]
+  "Horizon Hill Golf": [4,5,3,4,4,5,4,3,4,4,4,3,5,4,4,4,3,5],
+  "Mountain View Golf": [4,3,5,4,4,4,3,4,5,4,5,4,3,4,4,3,4,5],
+  "Bukit Jawi Golf Hill Course": [4,3,4,4,4,5,4,3,5,5,4,3,4,3,5,3,4,5],
+  "Bukit Jawi Golf Lake Course": [5,3,4,3,4,4,4,4,5,4,5,3,5,4,3,4,4,4],
+  "Royal Kedah Club": [4,5,4,3,4,5,3,4,4,4,5,4,3,4,5,3,4,4],
+  "Darulaman Golf Country Club": [5,4,3,3,5,3,4,4,4,5,3,4,4,3,4,5,4,4],
+  "Kulim Golf Country Club": [4,4,3,5,4,4,3,5,4,4,4,3,5,3,4,5,4,4]
 };
 
 function showPage(page) {
-  document.getElementById('page1').classList.remove('active');
-  document.getElementById('page2').classList.remove('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page' + page).classList.add('active');
 }
 
 function startGame() {
-  if (players.length === 0) {
-    alert("Please add at least one player");
-    return;
-  }
+  if (players.length === 0) return alert("Please add at least one player");
+  
   currentCourseName = document.getElementById('course').value || "No Course";
   document.getElementById('currentCourse').textContent = currentCourseName;
   document.getElementById('currentMode').textContent = document.getElementById('mode').value;
+  
   showPage(2);
   updatePlayerSelect();
   showLeaderboard();
@@ -131,10 +192,13 @@ function loadCourse() {
 function showModeDesc() {
   let mode = document.getElementById('mode').value;
   let desc = document.getElementById('modeDesc');
-  if (mode === "Stroke") desc.innerHTML = "Lowest total strokes wins.";
-  else if (mode === "Scramble") desc.innerHTML = "Best shot every hole. Lowest total wins.";
-  else if (mode === "Nassau") desc.innerHTML = "Bet on Front 9, Back 9, and Full 18.";
-  else if (mode === "Skins") desc.innerHTML = "Lowest score on each hole wins the skin.";
+  const texts = {
+    "Stroke": "Lowest total strokes wins.",
+    "Scramble": "Best shot every hole. Lowest total wins.",
+    "Nassau": "Bet on Front 9, Back 9, and Full 18.",
+    "Skins": "Lowest score on each hole wins the skin."
+  };
+  desc.innerHTML = texts[mode] || "";
 }
 
 function updateHoles() {
@@ -144,7 +208,7 @@ function updateHoles() {
   for (let i = 1; i <= pars.length; i++) {
     let opt = document.createElement('option');
     opt.value = i;
-    opt.textContent = "Hole " + i + " (Par " + pars[i-1] + ")";
+    opt.textContent = `Hole ${i} (Par ${pars[i-1]})`;
     select.appendChild(opt);
     chocoSelect.appendChild(opt.cloneNode(true));
   }
@@ -152,16 +216,15 @@ function updateHoles() {
 
 function addPlayer() {
   let name = document.getElementById('player').value.trim();
-  if (name && !players.includes(name)) {
-    players.push(name);
-    scores[name] = Array(pars.length).fill(0);
-    chocolates[name] = Array(pars.length).fill(0);
-    document.getElementById('player').value = '';
-    updatePlayerList();
-    updatePlayerSelect();
-  } else if (name) {
-    alert("Player already exists!");
-  }
+  if (!name) return alert("Please enter a player name");
+  if (players.includes(name)) return alert("Player already exists!");
+  
+  players.push(name);
+  scores[name] = Array(pars.length).fill(0);
+  chocolates[name] = Array(pars.length).fill(0);
+  document.getElementById('player').value = '';
+  updatePlayerList();
+  updatePlayerSelect();
 }
 
 function updatePlayerList() {
@@ -169,15 +232,15 @@ function updatePlayerList() {
 }
 
 function updatePlayerSelect() {
-  let select = document.getElementById('playerSelect');
-  let chocoSelect = document.getElementById('chocoPlayer');
-  select.innerHTML = chocoSelect.innerHTML = '';
+  let pSelect = document.getElementById('playerSelect');
+  let cSelect = document.getElementById('chocoPlayer');
+  pSelect.innerHTML = cSelect.innerHTML = '';
   players.forEach(p => {
     let opt = document.createElement('option');
     opt.value = p;
     opt.textContent = p;
-    select.appendChild(opt);
-    chocoSelect.appendChild(opt.cloneNode(true));
+    pSelect.appendChild(opt);
+    cSelect.appendChild(opt.cloneNode(true));
   });
 }
 
@@ -207,20 +270,20 @@ function showLeaderboard() {
   let numHoles = pars.length;
   let html = `<h2>${currentCourseName} - ${numHoles} Holes</h2><table>`;
   html += "<tr><th>Player</th>";
-  for (let i = 1; i <= numHoles; i++) html += "<th>H" + i + "</th>";
+  for (let i = 1; i <= numHoles; i++) html += `<th>H${i}</th>`;
   html += "<th>Gross</th><th>Chocolate</th><th>Net</th></tr>";
 
   players.forEach(p => {
     let gross = scores[p].reduce((a,b) => a + b, 0);
     let chocoTotal = chocolates[p].reduce((a,b) => a + b, 0);
     let net = gross - chocoTotal;
-    html += "<tr><td>" + p + "</td>";
+    html += `<tr><td>${p}</td>`;
     for (let i = 0; i < numHoles; i++) {
       let s = scores[p][i] || "-";
-      let c = chocolates[p][i] > 0 ? "(+" + chocolates[p][i] + ")" : "";
-      html += "<td>" + s + " " + c + "</td>";
+      let c = chocolates[p][i] > 0 ? `(+${chocolates[p][i]})` : "";
+      html += `<td>${s} ${c}</td>`;
     }
-    html += "<td><b>" + gross + "</b></td><td>" + chocoTotal + "</td><td><b>" + net + "</b></td></tr>";
+    html += `<td><b>${gross}</b></td><td>${chocoTotal}</td><td><b>${net}</b></td></tr>`;
   });
   html += "</table>";
   document.getElementById('leaderboard').innerHTML = html;
@@ -237,20 +300,18 @@ function showWinner() {
       return {name: p, net: gross - choco};
     }).sort((a,b) => a.net - b.net);
 
-    html += '<h3>Overall Winner: <b>' + results[0].name + '</b> (' + results[0].net + ')</h3>';
+    html += `<h3>Overall Winner: <b>${results[0].name}</b> (Net ${results[0].net})</h3>`;
     html += '<table><tr><th>Rank</th><th>Player</th><th>Net Score</th></tr>';
     results.forEach((r, i) => {
       let cls = (i === 0) ? ' class="highlight"' : '';
-      html += '<tr' + cls + '><td>' + (i+1) + '</td><td>' + r.name + '</td><td>' + r.net + '</td></tr>';
+      html += `<tr${cls}><td>${i+1}</td><td>${r.name}</td><td>${r.net}</td></tr>`;
     });
     html += '</table>';
-  } 
-  else if (mode === "Skins") {
-    html += '<h3>Skins Winners (Lowest score per hole)</h3>';
+  } else if (mode === "Skins") {
+    html += '<h3>Skins Winners (Lowest per hole)</h3>';
     html += '<table><tr><th>Hole</th><th>Winner</th><th>Score</th></tr>';
     for (let h = 0; h < pars.length; h++) {
-      let minScore = Infinity;
-      let winner = '';
+      let minScore = Infinity, winner = '';
       players.forEach(p => {
         let s = scores[p][h];
         if (s > 0 && s < minScore) {
@@ -258,36 +319,29 @@ function showWinner() {
           winner = p;
         }
       });
-      if (winner) {
-        html += '<tr><td>H' + (h+1) + '</td><td>' + winner + '</td><td>' + minScore + '</td></tr>';
-      }
+      if (winner) html += `<tr><td>H${h+1}</td><td>${winner}</td><td>${minScore}</td></tr>`;
     }
     html += '</table>';
   }
-
   html += '</div>';
   document.getElementById('leaderboard').innerHTML += html;
 }
 
 function downloadScorecard() {
-  const leaderboard = document.getElementById('leaderboard');
-  if (!leaderboard.innerHTML.trim()) {
-    alert("Please show leaderboard first");
-    return;
-  }
-  html2canvas(leaderboard, {backgroundColor: "#0a1f0a", scale: 2}).then(canvas => {
+  const lb = document.getElementById('leaderboard');
+  if (!lb.innerHTML.trim()) return alert("Please show leaderboard first");
+  
+  html2canvas(lb, {backgroundColor: "#0a1f0a", scale: 2}).then(canvas => {
     const link = document.createElement('a');
     link.download = currentCourseName.replace(/ /g, '_') + '_Scorecard.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-    alert("✅ Scorecard downloaded!");
+    alert("✅ Scorecard downloaded successfully!");
   });
 }
 
 function resetGame() {
-  scores = {};
-  chocolates = {};
-  players = [];
+  scores = {}; chocolates = {}; players = [];
   document.getElementById('leaderboard').innerHTML = '';
   document.getElementById('scoreLog').innerHTML = '';
   document.getElementById('chocoLog').innerHTML = '';
@@ -297,13 +351,6 @@ function resetGame() {
 }
 
 function init() {
-  const courseSelect = document.getElementById('course');
-  Object.keys(courses).forEach(course => {
-    let opt = document.createElement('option');
-    opt.value = course;
-    opt.textContent = course;
-    courseSelect.appendChild(opt);
-  });
   updateHoles();
   updatePlayerSelect();
 }
